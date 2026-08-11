@@ -365,6 +365,12 @@
             display: block;
             border-radius: 12px;
             object-fit: cover;
+            cursor: pointer; /* Menambahkan cursor pointer agar user tahu bisa diklik */
+            transition: transform 0.3s ease;
+        }
+
+        .qris-img-wrapper img:hover {
+            transform: scale(1.02);
         }
 
         .qris-title {
@@ -442,6 +448,61 @@
             font-size: 1.1rem;
         }
 
+        /* Modal Preview Image (Lightbox) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            border: 4px solid var(--accent-gold-light);
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 45px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        .close-modal:hover,
+        .close-modal:focus {
+            color: var(--accent-gold);
+            text-decoration: none;
+        }
+
         /* Responsive Typography */
         @media (max-width: 640px) {
             header {
@@ -499,6 +560,12 @@
 
             .qris-title {
                 font-size: 1.5rem;
+            }
+
+            .close-modal {
+                top: 15px;
+                right: 25px;
+                font-size: 35px;
             }
         }
 
@@ -600,7 +667,8 @@
                 <div class="section-title">Quick Scan</div>
                 <div class="qris-container">
                     <div class="qris-img-wrapper">
-                        <img src="file_000000001d848211b10ae81d9b35bd01.png" alt="QRIS MY REKENING">
+                        <!-- Menambahkan id untuk kemudahan target javascript -->
+                        <img id="qrisImage" src="file_000000001d848211b10ae81d9b35bd01.png" alt="QRIS MY REKENING" title="Klik untuk memperbesar">
                     </div>
                     <h2 class="qris-title">NOURAPAY</h2>
                     <p class="qris-subtitle">Scan untuk pembayaran instan</p>
@@ -610,7 +678,7 @@
     </div>
 
     <footer>
-        <p>© 2026 FARID ARIS
+        <p>© 2026 FARID ARIS</p>
     </footer>
 
     <!-- Notifikasi Salin -->
@@ -618,7 +686,14 @@
         <i class="fa-solid fa-circle-check"></i> Nomor berhasil disalin!
     </div>
 
+    <!-- Modal Lightbox Preview Image -->
+    <div id="imageModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
     <script>
+        // Script 1: Fitur Copy to Clipboard (Tidak Diubah)
         function copyToClipboard(elementId) {
             var text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text).then(function() {
@@ -629,6 +704,44 @@
                 console.error('Gagal menyalin: ', err);
             });
         }
+
+        // Script 2: Fitur Modal Preview Image QRIS
+        document.addEventListener("DOMContentLoaded", function() {
+            var modal = document.getElementById("imageModal");
+            var img = document.getElementById("qrisImage");
+            var modalImg = document.getElementById("modalImage");
+            var closeBtn = document.getElementsByClassName("close-modal")[0];
+
+            // Buka Modal saat gambar QRIS diklik
+            img.onclick = function() {
+                modal.style.display = "flex";
+                // setTimeout kecil digunakan untuk mentrigger transisi opacity/scale CSS
+                setTimeout(function() {
+                    modal.classList.add("show");
+                }, 10);
+                modalImg.src = this.src;
+            }
+
+            // Fungsi untuk menutup Modal
+            function closeModal() {
+                modal.classList.remove("show");
+                setTimeout(function() {
+                    modal.style.display = "none";
+                }, 300); // Sesuaikan dengan durasi transisi CSS
+            }
+
+            // Tutup modal saat tombol close (X) diklik
+            closeBtn.onclick = function() {
+                closeModal();
+            }
+
+            // Tutup modal saat user mengklik area gelap di luar gambar
+            modal.onclick = function(event) {
+                if (event.target !== modalImg) {
+                    closeModal();
+                }
+            }
+        });
     </script>
 
 </body>
