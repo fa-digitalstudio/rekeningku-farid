@@ -365,12 +365,31 @@
             display: block;
             border-radius: 12px;
             object-fit: cover;
-            cursor: pointer; /* Menambahkan cursor pointer agar user tahu bisa diklik */
+            cursor: pointer;
             transition: transform 0.3s ease;
         }
 
         .qris-img-wrapper img:hover {
             transform: scale(1.02);
+        }
+
+        /* Teks Petunjuk Zoom */
+        .zoom-hint {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            margin-top: -20px;
+            margin-bottom: 20px;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        
+        .zoom-hint:hover {
+            color: var(--accent-gold);
         }
 
         .qris-title {
@@ -670,6 +689,9 @@
                         <!-- Menambahkan id untuk kemudahan target javascript -->
                         <img id="qrisImage" src="file_000000001d848211b10ae81d9b35bd01.png" alt="QRIS MY REKENING" title="Klik untuk memperbesar">
                     </div>
+                    <!-- Teks tambahan di bawah gambar -->
+                    <p class="zoom-hint" onclick="document.getElementById('qrisImage').click()"><i class="fa-solid fa-magnifying-glass-plus"></i> klik untuk memperbesar</p>
+                    
                     <h2 class="qris-title">NOURAPAY</h2>
                     <p class="qris-subtitle">Scan untuk pembayaran instan</p>
                 </div>
